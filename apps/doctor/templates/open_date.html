@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}Abrir Horário{% endblock title %}
+
+{% block content %}
+    <h1 class="mt-4">Abrir Horário</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item">Inicio</li>
+        <li class="breadcrumb-item">Médico</li>
+        <li class="breadcrumb-item active">Abrir Horário</li>
+    </ol>
+    <div class="row">
+        {% for message in messages %}
+            <div class="alert alert-{{message.tags}}" role="alert">
+                {{message}}
+            </div>
+        {% endfor %}
+
+        <p class="fs-5 m-0">Olá, <span class="fw-bold">{{request.user.first_name}} {{request.user.last_name}}</span></p>
+        <p class="fw-lighter">Página responsável por fazer abertura de novos horários de atendimento.</p>
+    </div>
+
+    <form class="row" method="POST">
+        {% csrf_token %}
+        <div class="col-md-12">
+            <label for="id_date" class="form-label">Data e Horário</label>
+            <div class="input-group">
+                <input type="datetime-local" 
+                   name="date" 
+                   id="id_date" 
+                   class="form-control {% if form.date.errors %}is-invalid{% endif %}" 
+                   required
+                   value="{{form.date.value|default:''}}">
+
+                <div class="invalid-feedback"> 
+                    {% for error in form.date.errors %}
+                        {{error}}
+                    {% endfor %} 
+                </div>
+                <button type="submit" class="btn btn-primary">Adicionar</button>
+            </div>
+        </div>
+    </form>
+
+    <div class="row m-1 mt-3">
+        <table class="table table-striped table-sm caption-top">
+            <caption>Seus horários:</caption>
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">Data</th>
+                    <th scope="col">Hora</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for date in dates %}
+                    <tr>
+                        <td>{{date.date.date}}</td>
+                        <td>{{date.date.time}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>     
+    </div>
+{% endblock content %}

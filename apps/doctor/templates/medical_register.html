@@ -1,0 +1,248 @@
+{% extends 'base.html' %}
+{% block title %}Cadastro Médico{% endblock title %}
+
+{% block content %}
+    <h1 class="mt-4">Cadastro Médico</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item">Inicio</li>
+        <li class="breadcrumb-item active">Cadastro Médico</li>
+    </ol>
+    <div class="row">
+        
+        {% if request.user.is_authenticated %}
+            <p class="fs-5 m-0">Olá, <span class="fw-bold">{{request.user.first_name}} {{request.user.last_name}}</span></p>
+            <p class="fw-lighter">Vamos realizar seu cadastro médico.</p>
+        {% else %}
+            <p class="fs-6 m-0">Olá, você precisa estar logado!</p>
+            <a class="" href="{% url 'login' %}">Clique aqui para entrar</a>
+        {% endif %} 
+        
+
+        {% for message in messages %}
+            <div class="alert alert-{{message.tags}}" role="alert">
+                {{message}}
+            </div>
+        {% endfor %}
+    </div>
+
+    <form class="row m-1 g-3" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="col-md-6">
+            <label for="id_crm" class="form-label">CRM</label>
+            <input type="text" 
+                   name="crm" 
+                   maxlength="15" 
+                   id="id_crm" 
+                   class="form-control {% if form.crm.errors %}is-invalid{% endif %}" 
+                   required
+                   value="{{form.crm.value|default:''}}"
+                   placeholder="CRM/AA 123456">
+            <div class="invalid-feedback"> 
+                {% for error in form.crm.errors %}
+                    {{error}}
+                {% endfor %} 
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <label for="id_specialty" class="form-label">Especialidade</label>
+            <select name="specialty" id="id_specialty" class="form-select {% if form.specialty.errors %}is-invalid{% endif %}" required>
+                {% for value, label in form.specialty.field.choices %}
+                    {% if not value %}
+                        <option selected>
+                            Nenhuma
+                        </option>
+                    {% else %}
+                        <option value="{{value}}" {% if value == form.specialty.value %}selected{% endif %}>
+                            {{label}}
+                        </option>
+                    {% endif %} 
+                {% endfor %}
+            </select>
+            <div class="invalid-feedback"> 
+                {% for error in form.specialty.errors %}
+                    {{error}}
+                {% endfor %} 
+            </div>
+        </div>
+
+        <div class="col-4">
+            <label for="id_cep" class="form-label">CEP</label>
+            <input type="text" 
+                   name="cep" 
+                   maxlength="15" 
+                   id="id_cep" 
+                   class="form-control {% if form.cep.errors %}is-invalid{% endif %}" 
+                   required
+                   value="{{form.cep.value|default:''}}"
+                   placeholder="00000-000">
+
+            <div class="invalid-feedback"> 
+                {% for error in form.cep.errors %}
+                    {{error}}
+                {% endfor %} 
+            </div>
+        </div>
+
+        <div class="col-6">
+            <label for="id_street" class="form-label">Rua</label>
+            <input type="text" 
+                   name="street" 
+                   maxlength="100" 
+                   id="id_street" 
+                   class="form-control {% if form.street.errors %}is-invalid{% endif %}" 
+                   required 
+                   value="{{form.street.value|default:''}}"
+                   placeholder="Digite o nome da rua">
+
+            <div class="invalid-feedback"> 
+                {% for error in form.street.errors %}
+                    {{error}}
+                {% endfor %} 
+            </div>
+        </div>
+
+        <div class="col-2">
+            <label for="id_number" class="form-label">Numero</label>
+            <input type="text" 
+                   name="number" 
+                   maxlength="10" 
+                   id="id_number" 
+                   class="form-control {% if form.number.errors %}is-invalid{% endif %}" 
+                   required
+                   value="{{form.number.value|default:''}}"
+                   placeholder="00">
+
+            <div class="invalid-feedback"> 
+                {% for error in form.number.errors %}
+                    {{error}}
+                {% endfor %} 
+            </div>
+        </div>
+
+        <div class="col-6">
+            <label for="id_neighborhood" class="form-label">Bairro</label>
+            <input type="text" 
+                   name="neighborhood" 
+                   maxlength="100" 
+                   id="id_neighborhood" 
+                   class="form-control {% if form.neighborhood.errors %}is-invalid{% endif %}" 
+                   required
+                   value="{{form.neighborhood.value|default:''}}"
+                   placeholder="Digite o nome do bairro">
+
+            <div class="invalid-feedback"> 
+                {% for error in form.neighborhood.errors %}
+                    {{error}}
+                {% endfor %} 
+            </div>
+        </div>
+
+        <div class="col-6">
+            <label for="id_city" class="form-label">Cidade</label>
+            <input type="text" 
+                   name="city" 
+                   maxlength="100" 
+                   id="id_city" 
+                   class="form-control {% if form.city.errors %}is-invalid{% endif %}" 
+                   required
+                   value="{{form.city.value|default:''}}"
+                   placeholder="Nome da Cidade/AA">
+
+            <div class="invalid-feedback"> 
+                {% for error in form.city.errors %}
+                    {{error}}
+                {% endfor %} 
+            </div>
+        </div>
+
+        <div class="col-6">
+            <div class="mb-3">
+                <label for="id_description" class="form-label">Descrição</label>
+                <textarea name="description" 
+                        id="id_description"
+                        style="min-height: 124px; max-height: 124px; resize: none;"
+                        class="form-control {% if form.description.errors %}is-invalid{% endif %}" 
+                        required>{{form.description.value|default:''}}</textarea>
+
+                <div class="invalid-feedback"> 
+                    {% for error in form.description.errors %}
+                        {{error}}
+                    {% endfor %} 
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="id_value" class="form-label">Valor da Consulta (R$)</label>
+                <input type="number"
+                       name="value" 
+                       value="100" 
+                       step="any" 
+                       id="id_value"
+                       class="form-control {% if form.value.errors %}is-invalid{% endif %}" 
+                       required
+                       value="{{form.value.value|default:''}}"
+                       placeholder="0,00">
+
+                <div class="invalid-feedback"> 
+                    {% for error in form.value.errors %}
+                        {{error}}
+                    {% endfor %} 
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6">
+            <div class="mb-3">
+                <label for="id_rg" class="form-label">Identidade</label>
+                <input type="file" 
+                    name="rg" 
+                    accept="image/*"
+                    id="id_rg"
+                    class="form-control {% if form.rg.errors %}is-invalid{% endif %}" 
+                    required>
+
+                <div class="invalid-feedback"> 
+                    {% for error in form.rg.errors %}
+                        {{error}}
+                    {% endfor %} 
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="id_medical_identity" class="form-label">Cedula Identidade Medica</label>
+                <input type="file" 
+                    name="medical_identity" 
+                    accept="image/*"
+                    id="id_medical_identity"
+                    class="form-control {% if form.medical_identity.errors %}is-invalid{% endif %}" 
+                    required>
+
+                <div class="invalid-feedback"> 
+                    {% for error in form.medical_identity.errors %}
+                        {{error}}
+                    {% endfor %} 
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="id_photo" class="form-label">Foto de Perfil</label>
+                <input type="file" 
+                    name="photo" 
+                    accept="image/*"
+                    id="id_photo"
+                    class="form-control {% if form.photo.errors %}is-invalid{% endif %}" 
+                    required>
+                
+                <div class="invalid-feedback"> 
+                    {% for error in form.photo.errors %}
+                        {{error}}
+                    {% endfor %} 
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary">Finalizar Cadastro</button>
+        </div>
+    </form>
+{% endblock content %}

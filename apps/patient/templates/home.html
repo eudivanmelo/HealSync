@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load custom_tags %}
+
+{% block title %}Area do Paciente{% endblock title %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-6">
+            <h1 class="mt-4">Abrir Horário</h1>
+            <ol class="breadcrumb mb-4">
+                <li class="breadcrumb-item">Inicio</li>
+                <li class="breadcrumb-item">Médico</li>
+                <li class="breadcrumb-item active">Abrir Horário</li>
+            </ol>
+            <div class="row">
+                {% for message in messages %}
+                    <div class="alert alert-{{message.tags}}" role="alert">
+                        {{message}}
+                    </div>
+                {% endfor %}
+
+                <p class="fs-5 m-0">Olá, <span class="fw-bold">{{request.user.first_name}} {{request.user.last_name}}</span></p>
+                <p class="fw-lighter"></p>
+            </div>
+
+        </div>
+
+        <div class="col-6 mt-4">
+            <form method="GET">
+                <div class="input-group">
+                    <input name="search" value="{{request.GET.search}}" type="text" class="form-control" placeholder="Pesquisar por médicos...">
+                    <button class="btn btn-secondary" type="submit">Pesquisar</button>
+                </div>
+                <div class="row g-1 m-2 mb-3">
+                    {% for specialty in specialtys %}
+                    <div class="col-auto">
+                        <input name="specialty" type="checkbox" class="btn-check" id="btn-{{specialty}}" value="{{specialty.id}}" {% if specialty.id|stringformat:"s" in request.GET|getlist:'specialty' %} checked {% endif %}>
+                        <label class="btn btn-outline-secondary btn-sm" for="btn-{{specialty}}">{{specialty}}</label>
+                    </div>
+                    {% endfor %}
+                </div>
+            </form>
+            
+            <div class="row mx-2 px-2 overflow-auto" style="max-height: 768px">
+                {% for doctor in doctors %}
+                    <div class="card mb-2 p-0">
+                        <div class="card-body">
+                        <div class="d-flex mb-1">
+                            <div class="mt-1 me-2">
+                                <img class="card-photo" src="{{doctor.photo.url}}">
+                            </div>
+                            <div>
+                                <h5 class="card-title">{{doctor}}</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">{{doctor.specialty}}</h6>
+                                <h6 class="card-subtitle mb-2 text-muted">{{doctor.crm}}</h6>
+                            </div>
+                        </div>
+                        <p class="card-text">{{doctor.description}}</p>
+                        <span class="card-text text-muted">Endereço: {{doctor.street}}, {{doctor.number}} - {{doctor.neighborhood}}; {{doctor.city}}</span>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between">
+                            <span class="mt-1">Proxima Horário: {{doctor.next_date}}</span>
+                            <a href="{% url 'schedule_time' doctor_id=doctor.id %}" class="btn btn-primary btn-sm">Agendar</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+        
+{% endblock content %}

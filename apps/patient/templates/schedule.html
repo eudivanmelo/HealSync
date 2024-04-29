@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Agendar Horário{% endblock title %}
+
+{% block content %}
+    <h1 class="mt-4">Agendar Horário</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item">Inicio</li>
+        <li class="breadcrumb-item">Paciente</li>
+        <li class="breadcrumb-item active">Agendar Horário</li>
+    </ol>
+    <div class="row">
+        {% for message in messages %}
+            <div class="alert alert-{{message.tags}}" role="alert">
+                {{message}}
+            </div>
+        {% endfor %}
+
+        <h5 class="">{{doctor}}</h5>
+        <h6 class="card-subtitle text-muted">{{doctor.specialty}}</h6>
+        <h6 class="card-subtitle text-muted">{{doctor.crm}}</h6>
+    </div>
+    
+    {% if doctor %}
+        <div class="row mt-4 g-2">
+            {% for date in dates %}
+                <div class="col-auto">
+                    <div class="card">
+                        {% if not date.scheduled %}
+                            <div class="card-header bg-success text-white">
+                                Disponível
+                            </div>
+                        {% else %}
+                            <div class="card-header bg-danger text-white">
+                                Indisponível
+                            </div>
+                        {% endif %}
+                            
+                        <div class="card-body">
+                            <span>Data: <span class="text-muted">{{date.date|date:"d/m/Y"}}</span></span>
+                            <p>Horário: <span class="text-muted">{{date.date|date:"H:i"}}</span></p>
+                            <a href="#" class="btn btn-dark w-100 {% if date.scheduled %} disabled {% endif %}" >Selecionar</a>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="alert alert-primary" role="alert">
+                    Não há horários disponíveis...
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+        
+{% endblock content %}
